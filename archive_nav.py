@@ -39,7 +39,7 @@ def main_dashboard():
                         gotten to that part yet. So for now:
                         <ul><li> you have to unzip the archive yourself and put the full file path up above on FILENAME
                             <li>you can go to <a href="/tweets">/tweets</a> to see the full list</li>
-                            <li>you can go to /search/KEYWORD to search your tweet text for KEYWORD</li></ul>
+                            <li>you can go to /search/KEYWORD to search your tweet text for KEYWORD until i get this stupid text box working</li></ul>
                             <form action="/search/">Search: <input value="keywords"/><submit /></form></section>
                             """)
 
