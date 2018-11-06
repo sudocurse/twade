@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import json, sys
 import tweet as tweet_utils
-from flask import Flask,redirect
+from flask import Flask,redirect,request,url_for
 
 app = Flask(__name__)
 
@@ -40,7 +40,7 @@ def main_dashboard():
                         <ul><li> you have to unzip the archive yourself and put the full file path up above on FILENAME
                             <li>you can go to <a href="/tweets">/tweets</a> to see the full list</li>
                             <li>you can go to /search/KEYWORD to search your tweet text for KEYWORD until i get this stupid text box working</li></ul>
-                            <form action="/search/">Search: <input value="keywords"/><submit /></form></section>
+                            <form action="/search" method="post" name="search">Search: <input name="keywords" value="keywords"/><submit /></form></section>
                             """)
 
 @app.route('/tweets')
@@ -50,16 +50,44 @@ def page_render_all():
 
 @app.route('/search', methods=['POST'])
 def handle_search():
-    pass
+
+    terms = request.values['keywords']
+    app.logger.debug("Searching for: {}".format(request.values['keywords']))
+    return redirect(url_for("render_search", kw=terms))
 
 @app.route('/search/<kw>')
 def render_search(kw=None):
     app.logger.debug("Invoked search")
     if not kw:
         return "yikes you gotta have search terms"
-    results = search(sorted_archive, kw)
+    keywords = kw.split(" ")
+    results = search_words(keywords)
     body = render_tweets(results)
     return render_page(body)
+
+    
+def search_words(keyword_list):
+    """so this is hella inefficient, 
+            goes through each tweet looking for each keyword
+                O(n*k) for k keywords n tweets
+            goes through each keywords' result list looking for every other keyword
+                O(m*k) (k-1 keywords m results)
+            if it's already there, moves the word to the top of the list 
+                (probably O(m), haven't looked into pythons' list stuff)
+       Really I should probably merge the search and search_words functions and 
+       throw in a better datastructure for tweets.
+    """
+    results = []
+    for word in keyword_list:
+        # if the word is already there it's probably more relevant? so bump it up
+        single_word_result = search(sorted_archive, word)
+        for found in single_word_result:
+            if found in results:
+                results.insert(0, results.pop(results.index(word)))
+            else:
+                results.append(found)
+    return results
+
 
 def search(tweets, kw):
     results = []
@@ -78,5 +106,5 @@ def setup():
     return my_archive
 
 sorted_archive = list(reversed(setup()))
-app.logger.debug("uhhhh are there tweets? {}".format(sorted_archive))
+
 # print(page_render_all(sorted_archive))
