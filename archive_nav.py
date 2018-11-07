@@ -8,12 +8,14 @@ app = Flask(__name__)
 
 FILENAME = "PUT YOUR TWEETS.JS FULL FILE PATH HERE" # get rid of this
 
-HEADER = '<html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"></head><body>'
-FOOTER = '</body></html>'
+SEARCH_FORM = '<form action="/search" method="post" name="search">Search: <input name="keywords" value="keywords"/><submit /></form>'
 TWEETS_LISTING_TEMPLATE = """<div class="container">{}</div>"""
 TWEET_TEMPLATE = """<h4>{tweet.full_text}</h4>
 <a href="https://twitter.com/sudocurse/status/{tweet.id}">☁ go</a> |  Tweeted from {tweet.source} at {tweet.created_at}
 """
+HEADER = '<html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"></head><body>' \
+         + '<section class="container">{}</section>'.format(SEARCH_FORM)
+FOOTER = '</body></html>'
 
 def render_page(body):
     return HEADER + body + FOOTER
@@ -39,8 +41,7 @@ def main_dashboard():
                         gotten to that part yet. So for now:
                         <ul><li> you have to unzip the archive yourself and put the full file path up above on FILENAME
                             <li>you can go to <a href="/tweets">/tweets</a> to see the full list</li>
-                            <li>you can go to /search/KEYWORD to search your tweet text for KEYWORD until i get this stupid text box working</li></ul>
-                            <form action="/search" method="post" name="search">Search: <input name="keywords" value="keywords"/><submit /></form></section>
+                            <li>or use the search above!</li>
                             """)
 
 @app.route('/tweets')
