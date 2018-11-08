@@ -90,7 +90,7 @@ def search_words(keyword_list):
         single_word_result = search(sorted_archive, word)
         for found in single_word_result:
             if found in results:
-                results.insert(0, results.pop(results.index(word)))
+                results.insert(0, results.pop(results.index(found)))
             else:
                 results.append(found)
     return results
