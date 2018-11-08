@@ -25,6 +25,18 @@ class Tweet(object):
         self.coordinates = coordinates
         self.geo = geo
 
+    def __repr__(self):
+        if self.full_text:
+            return "<Tweet:id={}:{}>".format(self.id, str(self.full_text))
+        else:
+            return str(object.__repr__(self))
+
+    def __str__(self):
+        if self.full_text:
+            return str(self.full_text)
+        else:
+            return object.__str__(self)
+
 """
  The archive file you get from twitter is javascript EXPRESSIONS... not objects.
  aka you can't read them as json until you remove the thing at the beginning:
@@ -122,3 +134,5 @@ def parse_tweets(tweets):
         parsed.append(tw)
     return parsed
 
+def rank_popularity(tweets):
+    return sorted(tweets, key=lambda tweet: int(tweet.favorite_count)+int(tweet.retweet_count), reverse=True)
